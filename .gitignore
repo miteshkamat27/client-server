@@ -1,16 +1,20 @@
 # See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
 
 # dependencies
+/client
 /client/node_modules
+/client_code/node_modules
 /server/node_modules
 /client/.pnp
 .pnp.js
 
 # testing
 /client/coverage
+/client_code/coverage
 
 # production
 /client/build
+/client_code/build
 
 # misc
 .DS_Store
