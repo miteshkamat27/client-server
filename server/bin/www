@@ -7,6 +7,9 @@
 var app = require('../app');
 var debug = require('debug')('server:server');
 var http = require('http');
+var socketio = require('socket.io');
+var axios = require('axios');
+const { default: Axios } = require('axios');
 
 /**
  * Get port from environment and store in Express.
@@ -20,6 +23,7 @@ app.set('port', port);
  */
 
 var server = http.createServer(app);
+var io = socketio(server);
 
 /**
  * Listen on provided port, on all network interfaces.
@@ -29,6 +33,43 @@ server.listen(port);
 server.on('error', onError);
 server.on('listening', onListening);
 
+/**
+ * 
+ * Socket connection
+ */
+let interval;
+
+io.on("connection", (socket) => {
+  console.log("New client connected");
+  if (interval) {
+    clearInterval(interval);
+  }
+  interval = setInterval(() => getApiAndEmit(socket), 1000);
+  socket.on("disconnect", () => {
+    console.log("Client disconnected");
+    clearInterval(interval);
+  });
+});
+
+const getApiAndEmit = async socket => {
+  const response = new Date();
+  // Emitting a new message. Will be consumed by the client
+  
+  try {
+    const res = await axios.get('http://kaboom.rksv.net/#/', {
+      headers: {
+        "Access-Control-Allow-Origin": "*",
+        "Proxy-Authenticate": "Basic dXNlcm5hbWU6cGFzc3dvcmQ=",
+        "Proxy-Authorization": "Basic TWl0ZXNoLkthbWF0QHJpbC5jb206bUshMjExOTkw",
+        "Access-Control-Allow-Headers": "Origin, X-Requested-With, Content-Type, Accept"
+      }
+    });
+    socket.emit("FromAPI", res);
+  }
+  catch(error){
+    console.error(error);
+  }
+};
 /**
  * Normalize a port into a number, string, or false.
  */
