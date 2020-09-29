@@ -59,8 +59,6 @@ const getApiAndEmit = async socket => {
     const res = await axios.get('http://kaboom.rksv.net/#/', {
       headers: {
         "Access-Control-Allow-Origin": "*",
-        "Proxy-Authenticate": "Basic dXNlcm5hbWU6cGFzc3dvcmQ=",
-        "Proxy-Authorization": "Basic TWl0ZXNoLkthbWF0QHJpbC5jb206bUshMjExOTkw",
         "Access-Control-Allow-Headers": "Origin, X-Requested-With, Content-Type, Accept"
       }
     });
